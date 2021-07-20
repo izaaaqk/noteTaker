@@ -2,21 +2,21 @@ const express = require("express");
 const path = require("path");
 const fs = require("fs");
 
-const app = express();
+const server = express();
 
 const PORT = process.env.PORT || 3000;
 
 let noteData = [];
 
-app.use(express.json());
-app.use(
+server.use(express.json());
+server.use(
     express.urlencoded({
         extended: true,
     })
 );
-app.use(express.static(path.join(__dirname, "public")));
+server.use(express.static(path.join(__dirname, "public")));
 
-app.get("/api/notes", function (err, res) {
+server.get("/api/notes", function (err, res) {
     try {
         noteData = fs.readFileSync("db/db.json", "utf8");
         console.log("Hello from the SERVER!");
@@ -28,7 +28,7 @@ app.get("/api/notes", function (err, res) {
     res.json(noteData);
 });
 
-app.post("/api/notes", function (req, res) {
+server.post("/api/notes", function (req, res) {
     try {
         noteData = fs.readFileSync("./db/db.json", "utf8");
         console.log(noteData);
@@ -47,7 +47,7 @@ app.post("/api/notes", function (req, res) {
     }
 });
 
-app.delete("/api/notes/:id", function (req, res) {
+server.delete("/api/notes/:id", function (req, res) {
     try {
         noteData = fs.readFileSync("./db/db.json", "utf8");
         noteData = JSON.parse(noteData);
@@ -68,18 +68,18 @@ app.delete("/api/notes/:id", function (req, res) {
 });
 
 
-app.get("/notes", function (req, res) {
+server.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "public/notes.html"));
 });
 
-app.get("*", function (req, res) {
+server.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "public/index.html"));
 });
 
-app.get("/api/notes", function (req, res) {
+server.get("/api/notes", function (req, res) {
     return res.sendFile(path.json(__dirname, "db/db.json"));
 });
 
-app.listen(PORT, function () {
+server.listen(PORT, function () {
     console.log("SERVER IS LISTENING: " + PORT);
 });
